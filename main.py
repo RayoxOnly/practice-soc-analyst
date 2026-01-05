@@ -33,7 +33,6 @@ def data(bulan, tanggal, jam, user, ip, port):
         "port" : port
     }
 
-sample = []
 newBulanAcc = []
 newTanggalAcc = []
 newJamAcc = []
@@ -48,6 +47,7 @@ newTanggalInv = []
 
 
 def time(inti, bulan, tanggal, jam):
+    sample = []
     for y in range(len(inti)):
         sample.append(list(filter(None, inti[y].split())))
     for x in sample:
@@ -94,6 +94,41 @@ def dataData(inti,newUserList, newIpList, newPortList):
     return user, ip, port
 
 
+def datainv(inti,newUserList, newIpList, newPortList):
+    for x in inti:
+        pos = 0
+        while True:
+            user = x.find('user ', pos)
+            ip = x.find('from ', pos)
+            port = x.find('port ', pos)
+
+            if user == -1:
+                break
+        
+
+            awalID = user + 5
+            akhirID = x.find(' ', awalID)
+
+            awalIP = ip + 5
+            akhirIP = x.find(' ', awalIP)
+
+            awalPort = port + 5
+            akhirPort = x.find(" ", awalPort)
+
+        
+            if akhirID == -1:
+                break
+            
+            newUserList.append(x[awalID:akhirID])
+            newIpList.append(x[awalIP:akhirIP])
+            newPortList.append(x[awalPort:akhirPort])
+            pos = akhirID + 1
+
+    return user, ip, port
+
+
+
+
 newUserAcc = []
 newIPAcc = []
 newPortAcc = []
@@ -106,10 +141,45 @@ newUserInv = []
 newIPInv = []
 newPortInv = []
 
+
 dataData(berhasil, newUserAcc, newIPAcc, newPortAcc )
 dataData(gagal, newUserFai, newIPFai, newPortFai)
-dataData(invalid, newUserInv, newIPInv, newPortInv)
+datainv(invalid, newUserInv, newIPInv, newPortInv)
 
+
+botBulan = []
+botTanggal = []
+botJam = []
+
+botUser = []
+botIp = []
+botPort = []
+
+
+timeSementara = []
+
+
+for x in range(len(newUserInv)- 1, -1, -1):
+    if newUserInv[x] == '':
+        # time(x, botBulan, botTanggal, botJam)
+
+        bot = newUserInv.pop(x)
+        ip = newIPInv.pop(x)
+        port = newPortInv.pop(x)
+        
+        waktu = invalid.pop(x)
+
+        botUser.append(bot)
+        botIp.append(ip)
+        botPort.append(port)
+        timeSementara.append(waktu)
+
+time(timeSementara, botBulan, botTanggal, botJam)
+
+# print(len(botBulan))
+# print(len(botTanggal))
+# print(len(botUser))
+# print(len(botIp))
 
 dataBerhasilLog = []
 dataGagalLog = []
@@ -126,69 +196,63 @@ fullData(dataGagalLog, newUserFai, newBulanFai, newTanggalFai, newJamFai, newUse
 fullData(dataInvalidLog, newUserInv, newBulanInv, newTanggalInv, newJamInv, newUserInv, newIPInv, newPortInv)
 
 
-userLogin = []
+
+# print(len(newUserFai))
+# print(len(newIPFai))
+# print(len(newPortFai))
+# print(len(newJamAcc))
+# print(len(newUserAcc))
+# print(len(newJamFai))
+# print(len(newUserFai))
+# print(len(newJamInv))
+# print(len(newUserInv))
+# print(len(newTanggalFai))
+# print(len(newBulanFai))
+ 
+#USER ACCEPTED
 userLoginTotal = {}
-for x in dataBerhasilLog:
-    x = x["user"]
-    userLogin.append(x)
-# for x in userLogin:
-    # userLoginTotal[x] = userLoginTotal.get(x, 0) + 1
+for x in newUserAcc:
+    userLoginTotal[x] = userLoginTotal.get(x, 0) + 1
 
-
-#GAGAL DATA
-# for x in dataGagalLog:
-#      x = x['user']
-#      print(x)
 
 #USER GAGAL
-userGagal = []
 userGagalTotal = {}
-for x in dataGagalLog:
-    userGagal.append(x["user"])
-for x in userGagal:
+for x in newUserFai:
     userGagalTotal[x] = userGagalTotal.get(x, 0) + 1
 
-#INVALID DATA
 
 
-# print(invalid)
-
-newInvalid = []
-for y in range(len(invalid)):
-    newInvalid.append(list(filter(None, invalid[y].split())))
-
-# print(newInvalid)
-
-
-botInvalid = []
-realInvalid = []
-for x in newInvalid:
-    if x[11] != "from":
-        botInvalid.append(x)
-    else:
-        realInvalid.append(x)
-
-# print(realInvalid)
-
-
-# InvalidLog)
-
-# USER INVALID
-userInvalid = []
+#USER INVALID
 userInvalidTotal = {}
-for x in dataInvalidLog:
-    x = x["user"]
-    userInvalid.append(x)
-
-for x in userInvalid:
+for x in newUserInv:
     userInvalidTotal[x] = userInvalidTotal.get(x, 0) + 1
 
-# print(userLoginTotal)
-# print("////////////////////////////////////////")
-# print(userGagalTotal)
-# print("////////////////////////////////////////")
-# print(userInvalidTotal)
 
+print('percobaan login dari bot ' ' ',len(botUser))
+
+print(userLoginTotal)
+print("/////////////////////////////////////////////////////////")
+
+print(userGagalTotal)
+print("/////////////////////////////////////////////////////////")
+
+print(userInvalidTotal)
+
+
+
+
+
+# for x in dataInvalidLog:
+#     x = x["user"]
+#     user
+
+
+# for x in invalid:
+#     print(x)
+# print(invalid)
+# print(newUserInv)
+# print(len(newTanggalInv))
+# print(len(newBulanInv))
 
 
 
