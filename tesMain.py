@@ -57,7 +57,45 @@ def parsing(x):
         "status" : status
     }
 
-# def FailedLoginIPCount(line):
+def FailedLoginIPCount(x, coontainer):
+    ip = x["ip"]
+    coontainer[ip] = coontainer.get(ip, 0)+1
+    return coontainer
+
+
+def InvalidUserCount(x, container):
+    usr = x["user"]
+    container[usr] = container.get(usr, 0) +1
+    return container
+
+
+def TimeAttack(x, container):
+    x = x["jam"]
+    x = x.split(":")
+    jam = x[0]
+    container[jam] = container.get(jam , 0) + 1
+    return container
+
+
+def ipLolos(x, container):
+    container.append(x["ip"])
+    container
+    # container[ip] = container.get(ip, 0) + 1
+    return container
+
+
+# def Output():
+#     print("=== TOP ATTACKER IPs ===")
+#     for ip, count in sorted_ip[:10]:
+#         print(f"IP: {ip} | Total Serangan: {count}")
+
+#     print("=== TOP ATTACKED USER ===")
+#     for user, count in sorted_user[:10]: 
+#         print(f"User: {user} | Total Serangan: {count}")
+
+#     print("=== JAM PALING RAWAN SERANGAN ===")
+#     for x, y in urut[:10]:
+#         print(f" JAM {x} di serang {y}x")
 
 
 with open("auth.log", "r") as f:
@@ -73,9 +111,6 @@ for line in sshLog:
     fullData.append(data)
 
 
-for x in fullData:
-    if x["status"] ==  "unknown":
-        print(x)
 
 acceptedLog = []
 failedLog = []
@@ -89,61 +124,25 @@ for x in fullData:
     if x["status"] == "Invalid User":
         invalidUserLog.append(x)
 
-CounterIpFailed = []
-counterIP = {}
+# print(failedLog)
 
+counterIP = {} 
 for x in failedLog:
-    CounterIpFailed.append(x["ip"])    
-for x in CounterIpFailed:
-    counterIP[x] = counterIP.get(x, 0)+1
-sorted_ip = sorted(counterIP.items(), key=lambda item: item[1], reverse=True)
+    hasil = FailedLoginIPCount(x, counterIP)
 
-print("=== TOP ATTACKER IPs ===")
-for ip, count in sorted_ip[:10]:
-    print(f"IP: {ip} | Total Serangan: {count}")
-
-allInvalidUser = []
-countInvUser = {}
+invalidUser = {}
 for x in invalidUserLog:
-    allInvalidUser.append(x["user"])
-for x in allInvalidUser:
-    countInvUser[x] = countInvUser.get(x, 0) +1
-sorted_user = sorted(countInvUser.items(), key=lambda item: item[1], reverse=True)
+    hasil = InvalidUserCount(x, invalidUser)
 
-
-print("=== TOP ATTACKED USER ===")
-for user, count in sorted_user[:10]: 
-    print(f"User: {user} | Total Serangan: {count}")
-
-ip_accepted = []
-for x in fullData:
-    if x["status"] == "Accepted password":
-        ip_accepted.append(x["ip"])
-
-ip_accepted = set(ip_accepted)
-
-for ip, total in counterIP.items():
-    if ip in ip_accepted:
-        print(f"IP : {ip}, pernah gagak {total}x, dan berhasil")
-
-jam_rawan = []
-
+jamRawan = {}
 for x in failedLog:
-    jam_rawan.append(x["jam"])
+    TimeAttack(x, jamRawan)
 
-jam_rawan_count = {}
-for x in jam_rawan:
-    x = x.split(":")
-    jam = x[0]
-    jam_rawan_count[jam] = jam_rawan_count.get(jam , 0) + 1
+ipAcc = []
+for x in acceptedLog:
+    ipLolos(x, ipAcc)
+ipAcc = set(ipAcc)
 
-urut = sorted(jam_rawan_count.items(), key=lambda item: item[1], reverse=True)
-
-print("=== JAM PALING RAWAN SERANGAN ===")
-for x, y in urut[:10]:
-    print(f" JAM {x} di serang {y}x")
-
-# print(urut)
-
-
-# print(jam_rawan_count)
+for x, y in counterIP.items():
+    if x in ipAcc:
+        print(f"{x} berhasil setelah gagal sebanyak, {y}x")
