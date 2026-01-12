@@ -1,8 +1,10 @@
 def log(file):
     return [x for x in file if "sshd" in x]
 
+
 def is_valid_login_line(line):
     return "for " in line and "from " in line and "port " in line
+
 
 def parsing(x):
     x = x.replace("  ", " ")
@@ -13,7 +15,7 @@ def parsing(x):
     Aip = x.find("from ", Buser) + 5
     Bip = x.find(" ", Aip)
 
-    Aport= x.find("port ", Bip) + 5
+    Aport = x.find("port ", Bip) + 5
     Bport = x.find(" ", Aport)
 
     if x[Auser:Buser] == "invalid":
@@ -48,24 +50,25 @@ def parsing(x):
         user = "Bot"
 
     return {
-        "bulan" : bulan,
-        "tanggal" : tanggal,
-        "jam" : jam,
-        "user" : user,
-        "ip" : x[Aip:Bip],
-        "port" : x[Aport:Bport],
-        "status" : status
+        "bulan": bulan,
+        "tanggal": tanggal,
+        "jam": jam,
+        "user": user,
+        "ip": x[Aip:Bip],
+        "port": x[Aport:Bport],
+        "status": status,
     }
+
 
 def FailedLoginIPCount(x, coontainer):
     ip = x["ip"]
-    coontainer[ip] = coontainer.get(ip, 0)+1
+    coontainer[ip] = coontainer.get(ip, 0) + 1
     return coontainer
 
 
 def InvalidUserCount(x, container):
     usr = x["user"]
-    container[usr] = container.get(usr, 0) +1
+    container[usr] = container.get(usr, 0) + 1
     return container
 
 
@@ -73,7 +76,7 @@ def TimeAttack(x, container):
     x = x["jam"]
     x = x.split(":")
     jam = x[0]
-    container[jam] = container.get(jam , 0) + 1
+    container[jam] = container.get(jam, 0) + 1
     return container
 
 
@@ -83,20 +86,24 @@ def ipLolos(x, container):
     # container[ip] = container.get(ip, 0) + 1
     return container
 
+def urutan(isi):
+    urut = sorted(isi.items(), key=lambda item: item[1], reverse=True) 
+    return urut
 
-# def Output():
-#     print("=== TOP ATTACKER IPs ===")
-#     for ip, count in sorted_ip[:10]:
-#         print(f"IP: {ip} | Total Serangan: {count}")
+def printHasil(IP, USER, JAM):
+    print("=== TOP ATTACKER IPs ===")
+    for ip, count in IP[:10]:
+        print(f"IP: {ip} | Total Serangan: {count}")
 
-#     print("=== TOP ATTACKED USER ===")
-#     for user, count in sorted_user[:10]: 
-#         print(f"User: {user} | Total Serangan: {count}")
+    print("=== TOP ATTACKED USER ===")
+    for user, count in USER[:10]:
+        print(f"User: {user} | Total Serangan: {count}")
 
-#     print("=== JAM PALING RAWAN SERANGAN ===")
-#     for x, y in urut[:10]:
-#         print(f" JAM {x} di serang {y}x")
+    print("=== JAM PALING RAWAN SERANGAN ===")
+    for x, y in JAM[:10]:
+        print(f" JAM {x} di serang {y}x")
 
+ 
 
 with open("auth.log", "r") as f:
     logs = f.readlines()
@@ -109,7 +116,6 @@ for line in sshLog:
 
     data = parsing(line)
     fullData.append(data)
-
 
 
 acceptedLog = []
@@ -126,7 +132,7 @@ for x in fullData:
 
 # print(failedLog)
 
-counterIP = {} 
+counterIP = {}
 for x in failedLog:
     hasil = FailedLoginIPCount(x, counterIP)
 
@@ -143,6 +149,13 @@ for x in acceptedLog:
     ipLolos(x, ipAcc)
 ipAcc = set(ipAcc)
 
+
 for x, y in counterIP.items():
     if x in ipAcc:
         print(f"{x} berhasil setelah gagal sebanyak, {y}x")
+
+ipsort = urutan(counterIP)
+usersort = urutan(invalidUser)
+jamsort = urutan(jamRawan)
+
+printHasil(ipsort, usersort, jamsort)
