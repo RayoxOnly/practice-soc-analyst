@@ -1,0 +1,11 @@
+# Mengabaikan folder cache Python
+__pycache__/
+
+# Mengabaikan virtual environment
+.venv/
+
+# Mengabaikan settingan VS Code pribadi
+.vscode/
+
+# Mengabaikan log file (opsional, kalo lo gak mau auth.log ikut ke upload)
+*.log
