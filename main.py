@@ -1,18 +1,18 @@
 from parsing import log, is_valid_login_line, parsing
-from analysis import count_stats, urutan   
+from analysis import count_stats, urutan, brute_force_detected
 
-def printHasil(IP, USER, JAM):
-    print("=== TOP ATTACKER IPs ===")
-    for ip, count in IP[:10]:
-        print(f"IP: {ip} | Total Serangan: {count}")
+# def printHasil(IP, USER, JAM):
+#     print("=== TOP ATTACKER IPs ===")
+#     for ip, count in IP[:10]:
+#         print(f"IP: {ip} | Total Serangan: {count}")
 
-    print("=== TOP ATTACKED USER ===")
-    for user, count in USER[:10]:
-        print(f"User: {user} | Total Serangan: {count}")
+#     print("=== TOP ATTACKED USER ===")
+#     for user, count in USER[:10]:
+#         print(f"User: {user} | Total Serangan: {count}")
 
-    print("=== JAM PALING RAWAN SERANGAN ===")
-    for x, y in JAM[:10]:
-        print(f" JAM {x} di serang {y}x")
+#     print("=== JAM PALING RAWAN SERANGAN ===")
+#     for x, y in JAM[:10]:
+#         print(f" JAM {x} di serang {y}x")
 
  
 def main():
@@ -39,18 +39,22 @@ def main():
     invalidUser = count_stats(invalidUserLog, 'user')
     jamRawan = count_stats(failedLog, 'jam')
 
-    # Ambil semua IP dari acceptedLog, masukin ke set biar unik
     ipAcc = {x["ip"] for x in acceptedLog}
 
-    for x, y in counterIP.items():
-        if x in ipAcc:
-            print(f"{x} berhasil setelah gagal sebanyak, {y}x")
+    # for x, y in counterIP.items():
+    #     if x in ipAcc:
+            # print(f"{x} berhasil setelah gagal sebanyak, {y}x")
 
-    ipsort = urutan(counterIP)
-    usersort = urutan(invalidUser)
-    jamsort = urutan(jamRawan)
+    # ipsort = urutan(counterIP)
+    # usersort = urutan(invalidUser)
+    # jamsort = urutan(jamRawan)
 
-    printHasil(ipsort, usersort, jamsort)
+    # printHasil(ipsort, usersort, jamsort)
+    sementara = {}
+    for x in failedLog:
+        hasil = brute_force_detected(x, sementara)
+
+        print(sementara)
 
 
 if __name__ == "__main__":
