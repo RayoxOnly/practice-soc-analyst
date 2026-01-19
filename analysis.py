@@ -16,22 +16,34 @@ def brute_force_detected(x, data):
     tgl = x["tanggal"]
 
     jam = jam.split(":")
-    perhari = int(tgl) * 8760
+    perhari = int(tgl) * 86400
     perjam = int(jam[0]) * 3600
     permenit = int(jam[1]) * 60
     perdetik = int(jam[2]) * 1
 
-    jam = perhari+perjam + permenit + perdetik
+    jam_sekarang = perhari + perjam + permenit + perdetik
+
+    value = data.get(ip, [])
+    value.append(jam_sekarang)
     
-    kantong = data.get(ip, [])
-    kantong_baru = []
-    for y in kantong:
-        if jam - y <= 60:
-            kantong_baru.append(y)
+    newValue = []
+    for jam_lama in value:
+        if jam_sekarang - jam_lama <= 60:
+            newValue.append(jam_lama)
 
-    kantong_baru.append(jam)
-    data[ip] = kantong_baru
+    data[ip] = newValue
+    if len(newValue) > 3:
+        return True
+    return False
 
+
+
+
+
+    # value.append(jam)
 
     
+
+    
+
     
