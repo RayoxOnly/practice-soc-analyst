@@ -33,7 +33,7 @@ def brute_force_detected(x, data):
 
     data[ip] = realValue
 
-    if len(realValue) >= 3:
+    if len(realValue) >= 5:
         return True, len(realValue)
     return False, 0
       

@@ -121,6 +121,7 @@ def generate_report(fullData):
     }
 
 
+
 def main():
     fullData = []
     with open("auth.log", "r") as f:
